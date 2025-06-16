@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toggle Gitignore Script Documentation</title>
+    <style>
+        :root {
+            --primary-color: #2d3748;
+            --secondary-color: #4a5568;
+            --accent-color: #3182ce;
+            --background-color: #ffffff;
+            --code-background: #f7fafc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--background-color);
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 0.5rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        p {
+            color: var(--secondary-color);
+            margin: 1rem 0;
+        }
+
+        code {
+            background-color: var(--code-background);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: var(--code-background);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        pre code {
+            padding: 0;
+            background: none;
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        .note {
+            background-color: #ebf8ff;
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0.25rem;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Toggle Gitignore Script Documentation</h1>
+
+    <p>This script helps manage visibility of your projects in IDEs by dynamically modifying the parent directory's <code>.gitignore</code> file. It's particularly useful when working with multiple projects and you want to selectively expose only the current project to your IDE.</p>
+
+    <h2>Installation</h2>
+    <ol>
+        <li>
+            <strong>Download the Script</strong>:
+            <ul>
+                <li>Place <code>toggle-gitignore.sh</code> in a convenient location (recommended: <code>~/.local/bin/</code>)</li>
+            </ul>
+            <pre><code>mkdir -p ~/.local/bin
+cp toggle-gitignore.sh ~/.local/bin/
+chmod +x ~/.local/bin/toggle-gitignore.sh</code></pre>
+        </li>
+        <li>
+            <strong>Add to PATH</strong>:
+            <ul>
+                <li>Add the following line to your shell configuration file (<code>~/.zshrc</code> for Zsh or <code>~/.bashrc</code> for Bash):</li>
+            </ul>
+            <pre><code>export PATH="$HOME/.local/bin:$PATH"</code></pre>
+            <ul>
+                <li>Reload your shell configuration:</li>
+            </ul>
+            <pre><code>source ~/.zshrc  # or source ~/.bashrc for Bash</code></pre>
+        </li>
+    </ol>
+
+    <h2>First-Time Setup</h2>
+    <ol>
+        <li>
+            <strong>Identify Your Codebase Directory</strong>:
+            <ul>
+                <li>This is the parent directory containing all your projects</li>
+                <li>Example: If your projects are in <code>/Users/username/Documents/Codebase/</code>, that's your codebase directory</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Initial Run</strong>:
+            <pre><code>CODEBASE_PATH="/path/to/your/codebase/parent" toggle-gitignore.sh</code></pre>
+            <ul>
+                <li>Example: <code>CODEBASE_PATH="/Users/username/Documents" toggle-gitignore.sh</code></li>
+                <li>The script will save this configuration to <code>~/.toggle-gitignore.conf</code></li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Regular Usage</h2>
+    <ol>
+        <li>
+            <strong>Navigate to Project</strong>:
+            <pre><code>cd /path/to/your/project</code></pre>
+        </li>
+        <li>
+            <strong>Toggle Project Visibility</strong>:
+            <pre><code>toggle-gitignore.sh</code></pre>
+            <ul>
+                <li>First run: Makes your current project visible to the IDE</li>
+                <li>Second run: Hides all projects again</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>How It Works</h2>
+    <ol>
+        <li>
+            <strong>Configuration Storage</strong>:
+            <ul>
+                <li>The script stores your codebase path in <code>~/.toggle-gitignore.conf</code></li>
+                <li>You only need to set <code>CODEBASE_PATH</code> once during first-time setup</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Gitignore Management</strong>:
+            <ul>
+                <li>Creates/modifies the parent directory's <code>.gitignore</code></li>
+                <li>Toggles between two states:
+                    <ul>
+                        <li>Hide all projects: <code>/Codebase/*</code></li>
+                        <li>Show current project: <code>/Codebase/* + exception for current project</code></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <strong>IDE Integration</strong>:
+            <ul>
+                <li>Automatically reloads IDE (currently supports Windsurf on macOS)</li>
+                <li>Clears Git cache to ensure changes take effect</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Supported Operating Systems</h2>
+    <ul>
+        <li><strong>macOS</strong>: Full support with IDE reload</li>
+        <li><strong>Linux</strong>: Basic support (no IDE reload)</li>
+        <li><strong>Windows</strong>: Basic support with Git Bash (no IDE reload)</li>
+    </ul>
+
+    <h2>Troubleshooting</h2>
+    <ol>
+        <li>
+            <strong>Script Not Found</strong>:
+            <ul>
+                <li>Ensure the script is in your PATH</li>
+                <li>Verify script permissions (<code>chmod +x</code>)</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Wrong Codebase Path</strong>:
+            <ul>
+                <li>Delete <code>~/.toggle-gitignore.conf</code></li>
+                <li>Run again with correct <code>CODEBASE_PATH</code></li>
+            </ul>
+        </li>
+        <li>
+            <strong>IDE Not Reloading</strong>:
+            <ul>
+                <li>Currently, automatic IDE reload only works with Windsurf on macOS</li>
+                <li>For other IDEs, manually refresh your project view</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h2>Example Directory Structure</h2>
+    <pre><code>/Users/username/Documents/          <- CODEBASE_PATH
+├── Codebase/                      <- Default project directory
+│   ├── Project1/
+│   ├── Project2/
+│   └── Project3/
+└── .gitignore                     <- Managed by the script</code></pre>
+
+    <h2>Notes</h2>
+    <div class="note">
+        <ul>
+            <li>The script must be run from within a project directory under your codebase path</li>
+            <li>Each toggle operation clears Git's cache to ensure changes take effect</li>
+            <li>Configuration is persistent across sessions</li>
+            <li>IDE reload feature is currently macOS/Windsurf-specific</li>
+        </ul>
+    </div>
+</body>
+</html>
